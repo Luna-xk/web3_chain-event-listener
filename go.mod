@@ -1,4 +1,4 @@
-module github.com/lunaxk/chain-event-listener
+module github.com/Luna-xk/chain-event-listener
 
 go 1.22
 

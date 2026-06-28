@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 
-	"github.com/lunaxk/chain-event-listener/internal/model"
+	"github.com/Luna-xk/chain-event-listener/internal/model"
 )
 
 func addrTopic(a string) common.Hash {

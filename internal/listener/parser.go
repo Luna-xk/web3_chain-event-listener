@@ -8,7 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 
-	"github.com/lunaxk/chain-event-listener/internal/model"
+	"github.com/Luna-xk/chain-event-listener/internal/model"
 )
 
 var transferTopic = crypto.Keccak256Hash([]byte("Transfer(address,address,uint256)"))

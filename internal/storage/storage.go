@@ -4,7 +4,7 @@ package storage
 import (
 	"context"
 
-	"github.com/lunaxk/chain-event-listener/internal/model"
+	"github.com/Luna-xk/chain-event-listener/internal/model"
 )
 
 // Store 是事件存储接口。生产环境可换成 MySQL/Postgres 实现,

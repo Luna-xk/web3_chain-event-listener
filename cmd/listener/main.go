@@ -20,10 +20,10 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/lunaxk/chain-event-listener/internal/chain"
-	"github.com/lunaxk/chain-event-listener/internal/config"
-	"github.com/lunaxk/chain-event-listener/internal/listener"
-	"github.com/lunaxk/chain-event-listener/internal/storage"
+	"github.com/Luna-xk/chain-event-listener/internal/chain"
+	"github.com/Luna-xk/chain-event-listener/internal/config"
+	"github.com/Luna-xk/chain-event-listener/internal/listener"
+	"github.com/Luna-xk/chain-event-listener/internal/storage"
 )
 
 func main() {

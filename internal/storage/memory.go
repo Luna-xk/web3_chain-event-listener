@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/lunaxk/chain-event-listener/internal/model"
+	"github.com/Luna-xk/chain-event-listener/internal/model"
 )
 
 // Memory 是线程安全的内存实现,开箱即用、无需外部依赖,适合 demo 与单测。
