@@ -1,0 +1,15 @@
+# 二进制
+/bin/
+*.exe
+
+# 本地配置(含可能的私有 RPC key)
+config.yaml
+
+# 日志与临时文件
+*.log
+*.tmp
+.DS_Store
+
+# 数据库文件(若后续接入 sqlite)
+*.db
+*.sqlite

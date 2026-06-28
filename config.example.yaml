@@ -1,0 +1,24 @@
+# 复制为 config.yaml 后按需修改。
+chain:
+  name: "ethereum"
+  # mode = mock 时无需 RPC,本地模拟出块与事件(含一次链重组),适合离线演示。
+  # mode = rpc  时连接真实节点,需填写 rpc_url。
+  mode: "mock"
+  rpc_url: "https://eth.llamarpc.com"
+
+listener:
+  # start_block = 0:mock 模式从内置高度开始;rpc 模式从 (latest - lookback_blocks) 开始。
+  start_block: 0
+  lookback_blocks: 10
+  # 仅索引达到该确认深度的"安全"区块。mock 模式会制造一次深度为 3 的重组,
+  # 因此这里设为 2(略小于重组深度)以便演示"已索引区块被回滚"的过程;
+  # 主网建议 6~12。
+  confirmations: 2
+  poll_interval: "2s"   # 轮询新区块的间隔
+  reorg_depth: 64       # 链重组检测的最大回溯深度
+  batch_size: 20        # 单轮最多处理的区块数
+
+# 要监听的合约地址(留空则监听全网 Transfer)。下面是主网示例:
+contracts:
+  - "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"  # USDC (ERC20)
+  - "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"  # BAYC (ERC721)
