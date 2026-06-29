@@ -1,13 +1,17 @@
 module github.com/Luna-xk/chain-event-listener
 
-go 1.22
+go 1.24.0
+
+toolchain go1.24.5
 
 require (
 	github.com/ethereum/go-ethereum v1.14.8
+	github.com/go-sql-driver/mysql v1.10.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
+	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/bits-and-blooms/bitset v1.10.0 // indirect

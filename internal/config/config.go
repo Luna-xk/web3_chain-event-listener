@@ -20,7 +20,23 @@ const (
 type Config struct {
 	Chain     ChainConfig    `yaml:"chain"`
 	Listener  ListenerConfig `yaml:"listener"`
+	Storage   StorageConfig  `yaml:"storage"`
 	Contracts []string       `yaml:"contracts"`
+}
+
+// StorageDriver 决定事件持久化后端。
+type StorageDriver string
+
+const (
+	DriverMemory StorageDriver = "memory" // 内存(默认,适合 demo / 测试)
+	DriverMySQL  StorageDriver = "mysql"  // MySQL 持久化
+)
+
+type StorageConfig struct {
+	Driver StorageDriver `yaml:"driver"`
+	// DSN 为 MySQL 连接串,例如:
+	//   user:pass@tcp(127.0.0.1:3306)/chain_indexer?parseTime=true&charset=utf8mb4
+	DSN string `yaml:"dsn"`
 }
 
 type ChainConfig struct {
@@ -78,6 +94,9 @@ func (c *Config) applyDefaults() {
 	if c.Listener.LookbackBlocks == 0 {
 		c.Listener.LookbackBlocks = 10
 	}
+	if c.Storage.Driver == "" {
+		c.Storage.Driver = DriverMemory
+	}
 }
 
 func (c *Config) validate() error {
@@ -86,6 +105,12 @@ func (c *Config) validate() error {
 	}
 	if c.Chain.Mode != ModeRPC && c.Chain.Mode != ModeMock {
 		return fmt.Errorf("invalid chain.mode: %q (want rpc|mock)", c.Chain.Mode)
+	}
+	if c.Storage.Driver == DriverMySQL && c.Storage.DSN == "" {
+		return fmt.Errorf("storage.dsn is required when storage.driver=mysql")
+	}
+	if c.Storage.Driver != DriverMemory && c.Storage.Driver != DriverMySQL {
+		return fmt.Errorf("invalid storage.driver: %q (want memory|mysql)", c.Storage.Driver)
 	}
 	return nil
 }

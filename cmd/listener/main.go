@@ -12,6 +12,7 @@ package main
 import (
 	"context"
 	"flag"
+	"io"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -48,7 +49,16 @@ func main() {
 	}
 	defer client.Close()
 
-	store := storage.NewMemory()
+	store, err := buildStore(ctx, cfg)
+	if err != nil {
+		log.Error("build storage", "err", err)
+		os.Exit(1)
+	}
+	if c, ok := store.(io.Closer); ok {
+		defer c.Close()
+	}
+	log.Info("storage ready", "driver", cfg.Storage.Driver)
+
 	l := listener.New(cfg, client, store, log)
 
 	go reportStats(ctx, store, log)
@@ -76,6 +86,15 @@ func buildClient(ctx context.Context, cfg *config.Config) (chain.Client, error) 
 			genesis = 1_000_000 // 模拟链的起始高度
 		}
 		return chain.NewMockClient(genesis, contracts), nil
+	}
+}
+
+func buildStore(ctx context.Context, cfg *config.Config) (storage.Store, error) {
+	switch cfg.Storage.Driver {
+	case config.DriverMySQL:
+		return storage.NewMySQL(ctx, cfg.Storage.DSN, cfg.Chain.Name)
+	default:
+		return storage.NewMemory(), nil
 	}
 }
 

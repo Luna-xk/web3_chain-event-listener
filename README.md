@@ -17,7 +17,8 @@
 - **确认数机制**:可配置确认深度,降低浅层重组带来的脏数据。
 - **幂等入库**:以 `(txHash, logIndex)` 为业务主键去重,重放不会产生重复记录。
 - **断点续传**:重启后从存储中已处理的最高区块继续。
-- **可插拔架构**:`chain.Client` 与 `storage.Store` 均为接口,真实 RPC / mock、内存 / MySQL 可自由替换。
+- **可插拔存储**:`storage.Store` 为接口,内置 **内存** 与 **MySQL** 两种实现,配置一键切换。
+- **可插拔数据源**:`chain.Client` 为接口,真实 RPC / mock 自由替换。
 - **开箱即用的离线 Demo**:内置 `mock` 模式模拟出块并**主动制造一次链重组**,断网即可观察完整恢复流程。
 
 ---
@@ -98,6 +99,25 @@ chain:
 
 再次运行即可监听主网真实的 USDC / BAYC `Transfer` 事件。
 
+### 3. 使用 MySQL 持久化
+
+默认用内存存储(进程退出即清空)。要持久化,先建库再改配置:
+
+```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS chain_indexer DEFAULT CHARSET utf8mb4;"
+# 表会在程序启动时自动创建;也可手动执行 schema.sql
+```
+
+`config.yaml`:
+
+```yaml
+storage:
+  driver: "mysql"
+  dsn: "root:password@tcp(127.0.0.1:3306)/chain_indexer?parseTime=true&charset=utf8mb4"
+```
+
+启动后事件会写入 `chain_events` 表,进度记录在 `listener_state` 表;重启自动续传,发生重组时按区块号删除并重放。
+
 ---
 
 ## ⚙️ 配置说明
@@ -110,6 +130,8 @@ chain:
 | `listener.poll_interval` | 区块轮询间隔 |
 | `listener.reorg_depth` | 链重组检测的最大回溯深度 |
 | `listener.batch_size` | 单轮最多处理的区块数,控制追块速度 |
+| `storage.driver` | `memory`(默认)或 `mysql` |
+| `storage.dsn` | MySQL 连接串,`mysql` 模式必填(需带 `parseTime=true`) |
 | `contracts` | 监听的合约地址列表,留空表示监听全网 |
 
 ---
@@ -137,7 +159,7 @@ make test
 
 ## 🛣️ 后续可扩展方向
 
-- 接入 MySQL / Postgres 持久化(实现 `storage.Store` 接口即可)。
+- 接入 Postgres / ClickHouse 等更多存储(实现 `storage.Store` 接口即可)。
 - 多链并行监听(每条链一个 `Listener` 实例 + 统一调度)。
 - 暴露 Prometheus 指标与 HTTP 查询接口。
 - 用 WebSocket 订阅替代轮询以降低延迟。

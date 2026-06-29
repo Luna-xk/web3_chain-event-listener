@@ -18,6 +18,13 @@ listener:
   reorg_depth: 64       # 链重组检测的最大回溯深度
   batch_size: 20        # 单轮最多处理的区块数
 
+storage:
+  # driver = memory(默认,内存,适合 demo) 或 mysql(持久化)。
+  driver: "memory"
+  # driver=mysql 时填写连接串(parseTime=true 必须,用于扫描 DATETIME):
+  # dsn: "root:password@tcp(127.0.0.1:3306)/chain_indexer?parseTime=true&charset=utf8mb4"
+  dsn: ""
+
 # 要监听的合约地址(留空则监听全网 Transfer)。下面是主网示例:
 contracts:
   - "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"  # USDC (ERC20)
